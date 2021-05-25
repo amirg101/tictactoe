@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play | {{room_code}}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+<style>
+    @import url("https://fonts.googleapis.com/css?family=Catamaran:200");
+    @import url("https://fonts.googleapis.com/css?family=Quicksand");
+
+    /* General Styles */
+
+    /* * {
+          box-sizing: border-box;
+    } */
+
+    body {
+        background-color: #eee;
+        color: #333;
+        font-family: "Catamaran", sans-serif;
+    }
+
+    .full-page {
+        box-sizing: border-box;
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .flex-column {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .wrap {
+        flex-wrap: wrap;
+    }
+
+    /* Game Styles */
+
+    .game {
+        flex: 1 1 auto;
+        max-width: 400px;
+        border: 1px solid #ccc;
+    }
+
+    .game>div {
+        flex: 1 1 auto;
+        font-size: 1.1em;
+    }
+
+    /* Options */
+
+    #game_options {
+        flex: 1 1 auto;
+    }
+
+    #game_options>div {
+        flex: 1 1 auto;
+        min-width: 150px;
+    }
+
+    #player1type,
+    #player2type {
+        background-color: #bbb;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+
+    #player1type>div,
+    #player2type>div {
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5px;
+        cursor: pointer;
+    }
+
+    .activetype {
+        background-color: #dbdbdb;
+    }
+
+    #player1type>div:hover,
+    #player2type>div:hover {
+        background-color: #fff;
+    }
+
+    .playername {
+        flex: 1 1 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #ddd;
+        padding: 5px;
+        -webkit-transition: all 0.3s;
+        -moz-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+
+    .playername:focus {
+        outline: none;
+        background-color: #ccc;
+    }
+
+    .options {
+        flex: 1 1 100%;
+    }
+
+    .options>div {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ailevel {
+        font-size: 0.9em;
+        flex: 1 1 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .ailevel>div {
+        padding: 4px;
+        color: #eee;
+        flex: 1 1 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .easyai {
+        background-color: #773;
+    }
+
+    .averageai {
+        background-color: #753;
+    }
+
+    .expertai {
+        background-color: #b43;
+    }
+
+    .startReset {
+        width: 100%;
+        cursor: pointer;
+        color: #eee;
+    }
+
+    .startReset>div {
+        padding: 7px;
+        font-size: 1.3em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #start {
+        flex: 3 1 auto;
+        min-width: 234px;
+        background-color: #575;
+    }
+
+    #start:hover {
+        background-color: #595;
+    }
+
+    #start:active {
+        background-color: #484;
+    }
+
+    .startactive {
+        background-color: #494;
+    }
+
+    #reset {
+        flex: 1 1 auto;
+        background-color: #655;
+    }
+
+    #reset:hover {
+        background-color: #855;
+    }
+
+    #reset:active {
+        background-color: #844;
+    }
+
+    .scoreboard {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f0f0f0;
+    }
+
+    .scoreboard>div {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3px;
+    }
+
+    .activeplayer {
+        background-color: #248;
+    }
+
+    .boardcontainer {
+        width: 100%;
+        padding-top: 100%;
+        /* 1:1 Aspect Ratio */
+        position: relative;
+        /* If you want text inside of it */
+    }
+
+    .board {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-column-gap: 2px;
+        grid-row-gap: 2px;
+    }
+
+    .space {
+        background-color: #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Quicksand";
+        font-weight: 300;
+        font-size: 3em;
+    }
+
+    .space:hover {
+        background-color: #bbb;
+    }
+
+    .space:active {
+        background-color: #aaa;
+    }
+
+    .highlightVictory {
+        background-color: #388;
+    }
+
+    .tieboard {
+        background-color: #665;
+    }
+</style>
+
+<body>
+    <div class="full-page" id="full-page">
+        <div class="game flex-column">
+            <div class="scoreboard">
+                <div class="player1">
+                    Player 1: 0
+                </div>
+                <div class="player2">
+                    Player 2: 0
+                </div>
+            </div>
+            <div class="boardcontainer">
+                <div class="board">
+                    <div class="space" data-cell-index="0"></div>
+                    <div class="space" data-cell-index="1"></div>
+                    <div class="space" data-cell-index="2"></div>
+                    <div class="space" data-cell-index="3"></div>
+                    <div class="space" data-cell-index="4"></div>
+                    <div class="space" data-cell-index="5"></div>
+                    <div class="space" data-cell-index="6"></div>
+                    <div class="space" data-cell-index="7"></div>
+                    <div class="space" data-cell-index="8"></div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+var room_code='{{room_code}}'
+var username='{{username}}'
+var player=username.charAt(0)
+let socket = new WebSocket('ws://127.0.0.1:8000/ws/game/'+room_code)
+
+let gameState=["","","","","","","","",""]
+let elementArray= document.querySelectorAll('.space')
+var myturn=true
+
+elementArray.forEach(function(elem){
+    elem.addEventListener('click',function(event){
+        // console.log(event.path[0].getAttribute('data-cell-index'))
+        if(myturn===true){
+            myturn=false
+            setText(event.path[0].getAttribute('data-cell-index'),player)
+        }
+        else{
+            alert("wait for the other person to move")
+        }
+    })
+})
+function checkGameEnd(){
+    var count=0;
+    gameState.map((game)=>{
+        if(game!=""){
+            count++;
+        }
+
+    })
+    if(count>=9){
+        
+        var data={'type':'over'}
+        socket.send(JSON.stringify({data}))
+        swal("Game Over!","--Draw--","warning")
+    }
+}
+
+function checkWon(value,player){
+    var won=false
+    if(gameState[0]===value && gameState[1]==value && gameState[2]==value || gameState[3]==value && gameState[4]==value && gameState[5]==value || gameState[6]==value && gameState[7]==value && gameState[8]==value){
+        won=true
+    }
+    else if(gameState[0]===value && gameState[3]==value && gameState[6]==value || gameState[1]==value && gameState[4]==value && gameState[7]==value || gameState[2]==value && gameState[5]==value && gameState[8]==value){
+        won=true
+    }
+    else if(gameState[0]===value && gameState[4]==value && gameState[8]==value || gameState[2]==value && gameState[4]==value && gameState[6]==value){
+        won=true
+    }
+    if(won){
+        var data={'type':'end','player':player}
+        socket.send(JSON.stringify({data}))
+        swal("Good Job!","You won","success")
+        
+    }
+    else
+    {checkGameEnd()
+    }
+}
+
+
+
+
+
+
+
+
+function setText(index,value){
+    var data={
+        'player':player,
+        'index':index,
+        'type':'running'
+    }
+    
+    
+    if(gameState[parseInt(index)]==""){
+    gameState[parseInt(index)]=value
+    elementArray[parseInt(index)].innerHTML=value
+
+    socket.send(JSON.stringify({data}))
+    checkWon(value,player)
+    
+
+        }
+    else{
+        myturn=true
+        alert("You cannot fill this space")
+    }
+
+}
+
+function setAnotherUserText(index,value){
+    gameState[parseInt(index)]=value
+    elementArray[parseInt(index)].innerHTML=value
+    
+
+
+}
+socket.onopen=function(e){
+console.log("connected");
+}
+
+socket.onmessage=function(e){
+    var data=JSON.parse(e.data)
+    if(data.payload.type=="end" && data.payload.player!==player){
+        swal("Sorry!","You lost..","error")
+        return
+    }
+    else if(data.payload.type=="over"){
+        swal("Game over!","Game end no one won..","warning")
+        return
+
+    }
+    else if(data.payload.type=="running" && data.payload.player!==player){
+        setAnotherUserText(data.payload.index,data.payload,player)
+        
+        myturn=true
+
+    }
+
+    setAnotherUserText(data.payload.index,data.payload.player)
+    
+
+}
+socket.onclose=function(e){
+    console.log("closed");
+}
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
